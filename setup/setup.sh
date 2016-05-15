@@ -2,7 +2,8 @@
 ###################################################################################
 #  file: post-installation.sh
 # autor: frep
-#  desc: Setup the raspberry pi 3 based on the raspbian distribution
+#  desc: Sets up a raspberry pi 3 based on the raspbian distribution
+#        Important: dont run script as superuser, just "./setup.sh"
 ###################################################################################
 # paths and variables
 ###################################################################################
@@ -54,17 +55,24 @@ function startConkyAtStartx {
 function installVncServer {
 	sudo apt-get install x11vnc -y
 	x11vnc -storepasswd
-	#assertLaunchStartxScriptExists
+	cd ~/.config/
+	if [ ! -d autostart ]; then
+		mkdir autostart
+	fi
         cp -f ${setupdir}/vnc/x11vnc.desktop ~/.config/autostart/
 }
 
 function finderScreenSharing {
 	sudo apt-get install netatalk -y
 	sudo cp -f ${setupdir}/vnc/rfb.service /etc/avahi/services/
+	sudo cp -f ${setupdir}/vnc/afpd.service /etc/avahi/services/
 }
 
 function installChromium {
-	# todo
+	wget -qO - http://bintray.com/user/downloadSubjectPublicKey?username=bintray | sudo apt-key add -
+	echo "deb http://dl.bintray.com/kusti8/chromium-rpi jessie main" | sudo tee -a /etc/apt/sources.list
+	sudo apt-get update
+	sudo apt-get install chromium-browser rpi-youtube -y
 }
 
 ###################################################################################
@@ -73,8 +81,8 @@ function installChromium {
 
 #installConky
 #startConkyAtStartx
-#installVncServer
+installVncServer
 #finderScreenSharing
-installChromium
+#installChromium
 #sudo apt-get autoremove -y
 #sudo reboot
