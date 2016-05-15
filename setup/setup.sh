@@ -80,13 +80,36 @@ function installROS {
 	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu jessie main" > /etc/apt/sources.list.d/ros-latest.list'
 	wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | sudo apt-key add -
 	sudo apt-get update
-	sudo apt-get upgrade
+	sudo apt-get upgrade -y
 	# install bootstrap dependencies
-	sudo apt-get install python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six
+	sudo apt-get install python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six -y
 	sudo pip install rosdep rosinstall_generator wstool rosinstall
 	# initializing rosdep
 	sudo rosdep init
 	rosdep update
+	# installation
+	mkdir ~/ros_catkin_ws
+	cd ~/ros_catkin_ws
+	rosinstall_generator ros_comm --rosdistro indigo --deps --wet-only --exclude roslisp --tar > indigo-ros_comm-wet.rosinstall
+	wstool init src indigo-ros_comm-wet.rosinstall
+	# resolving dependencies
+	cd ~/ros_catkin_ws
+	rosdep install --from-paths src --ignore-src --rosdistro indigo -y -r --os=debian:jessie
+	# building workspace
+	cd ~/ros_catkin_ws
+	sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo
+	# source setup.bash
+	echo "" >> ~/.bashrc
+	echo "source /opt/ros/indigo/setup.bash" >> ~/.bashrc
+}
+
+function addReleasedROSPackage {
+	cd ~/ros_catkin_ws
+	rosinstall_generator $1 --rosdistro indigo --deps --wet-only --exclude roslisp --tar > indigo-custom_ros.rosinstall
+	wstool merge -t src indigo-custom_ros.rosinstall
+	wstool update -t src
+	rosdep install --from-paths src --ignore-src --rosdistro indigo -y -r --os=debian:jessie
+	sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo
 }
 
 ###################################################################################
@@ -98,12 +121,17 @@ function installROS {
 #installVncServer
 #finderScreenSharing
 #installChromium
-installROS
+#installROS
+#addReleasedROSPackage ros_tutorials
 #sudo apt-get autoremove -y
 #sudo reboot
 
 # unscripted modifications:
+# =========================
 # /boot/config.txt:
 # hdmi_force_hotplug=1
 # hdmi_group=2
 # hdmi_mode=73
+
+# /etc/dphys-swapfile
+# CONF_SWAPSIZE=1024
