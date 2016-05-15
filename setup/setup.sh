@@ -75,14 +75,35 @@ function installChromium {
 	sudo apt-get install chromium-browser rpi-youtube -y
 }
 
+function installROS {
+	# setup ROS repositories
+	sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu jessie main" > /etc/apt/sources.list.d/ros-latest.list'
+	wget https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -O - | sudo apt-key add -
+	sudo apt-get update
+	sudo apt-get upgrade
+	# install bootstrap dependencies
+	sudo apt-get install python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six
+	sudo pip install rosdep rosinstall_generator wstool rosinstall
+	# initializing rosdep
+	sudo rosdep init
+	rosdep update
+}
+
 ###################################################################################
 # program
 ###################################################################################
 
 #installConky
 #startConkyAtStartx
-installVncServer
+#installVncServer
 #finderScreenSharing
 #installChromium
+installROS
 #sudo apt-get autoremove -y
 #sudo reboot
+
+# unscripted modifications:
+# /boot/config.txt:
+# hdmi_force_hotplug=1
+# hdmi_group=2
+# hdmi_mode=73
