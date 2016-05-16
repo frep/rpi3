@@ -119,8 +119,6 @@ function installArduino {
 	tar xvfJ arduino-1.6.8-rc1-arm.tar.xz
 	cd arduino-1.6.8
 	./install.sh
-	cd
-	rm -rf Arduino-IDE-for-Raspberry/
 }
 
 ###################################################################################
@@ -133,7 +131,7 @@ function installArduino {
 #installROS
 #addReleasedROSPackage ros_tutorials
 #addReleasedROSPackage ps3joy
-#installArduino
+installArduino
 #sudo apt-get autoremove -y
 #sudo reboot
 
