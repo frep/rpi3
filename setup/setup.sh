@@ -112,26 +112,47 @@ function addReleasedROSPackage {
 	sudo ./src/catkin/bin/catkin_make_isolated --install -DCMAKE_BUILD_TYPE=Release --install-space /opt/ros/indigo
 }
 
+function installArduino {
+	cd
+	git clone https://github.com/NicoHood/Arduino-IDE-for-Raspberry.git
+	cd Arduino-IDE-for-Raspberry
+	tar xvfJ arduino-1.6.8-rc1-arm.tar.xz
+	cd arduino-1.6.8
+	./install.sh
+	cd
+	rm -rf Arduino-IDE-for-Raspberry/
+}
+
 ###################################################################################
 # program
 ###################################################################################
 
-#installConky
-#startConkyAtStartx
 #installVncServer
 #finderScreenSharing
 #installChromium
 #installROS
 #addReleasedROSPackage ros_tutorials
+#addReleasedROSPackage ps3joy
+#installArduino
 #sudo apt-get autoremove -y
 #sudo reboot
 
+# unverified:
+# ===========
+#installConky
+#startConkyAtStartx
+
+
+###################################################################################
 # unscripted modifications:
-# =========================
+###################################################################################
+
 # /boot/config.txt:
+# =================
 # hdmi_force_hotplug=1
 # hdmi_group=2
 # hdmi_mode=73
 
-# /etc/dphys-swapfile
+# /etc/dphys-swapfile:
+# ====================
 # CONF_SWAPSIZE=1024
