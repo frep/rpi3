@@ -82,7 +82,7 @@ function installROS {
 	sudo apt-get update
 	sudo apt-get upgrade -y
 	# install bootstrap dependencies
-	sudo apt-get install python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six -y
+	sudo apt-get install xterm python-pip python-setuptools python-yaml python-distribute python-docutils python-dateutil python-six -y
 	sudo pip install rosdep rosinstall_generator wstool rosinstall
 	# initializing rosdep
 	sudo rosdep init
@@ -131,7 +131,10 @@ function installArduino {
 #installROS
 #addReleasedROSPackage ros_tutorials
 #addReleasedROSPackage ps3joy
-installArduino
+#addReleasedROSPackage rqt
+#addReleasedROSPackage rqt-common-plugins
+addReleasedROSPackage rqt_graph
+#installArduino
 #sudo apt-get autoremove -y
 #sudo reboot
 
